@@ -1,0 +1,99 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "DOMO",
+        "description": "Enter the phone number registered in the DOMO app. An SMS code will be sent to it.",
+        "data": {
+          "phone": "Phone number",
+          "language": "Language"
+        }
+      },
+      "otp": {
+        "title": "SMS code",
+        "description": "Enter the code sent to {phone}.",
+        "data": {
+          "code": "Code"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Log in to DOMO again",
+        "description": "The DOMO session has expired. Submit to send a new SMS code to {phone}."
+      }
+    },
+    "error": {
+      "invalid_phone": "Enter an Uzbek number like +998 90 123 45 67.",
+      "too_many_requests": "Too many SMS requests. Try again in {retry_after} seconds.",
+      "otp_request_failed": "DOMO refused to send the SMS ({error}).",
+      "invalid_code": "The code is wrong or has expired.",
+      "cannot_connect": "Cannot connect to DOMO."
+    },
+    "abort": {
+      "already_configured": "This DOMO account is already configured.",
+      "reauth_successful": "Logged in again.",
+      "wrong_account": "That phone belongs to a different DOMO account."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "balance": {
+        "name": "Balance"
+      },
+      "meter_reading": {
+        "name": "Meter reading"
+      },
+      "reading_date": {
+        "name": "Reading date"
+      },
+      "month_usage": {
+        "name": "Usage this month"
+      },
+      "month_charge": {
+        "name": "Charge this month"
+      },
+      "last_day_usage": {
+        "name": "Last day usage"
+      },
+      "last_day_charge": {
+        "name": "Last day charge"
+      },
+      "updated_at": {
+        "name": "Updated"
+      }
+    },
+    "button": {
+      "refresh": {
+        "name": "Refresh data"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "DOMO options",
+        "description": "How often to fetch data from DOMO (DOMO itself updates usage about once a day), and the language for DOMO replies and device names.",
+        "data": {
+          "scan_interval": "Polling interval (hours)",
+          "language": "Language"
+        }
+      }
+    }
+  },
+  "selector": {
+    "language": {
+      "options": {
+        "ru": "Русский",
+        "uz": "Oʻzbekcha",
+        "en": "English"
+      }
+    }
+  },
+  "exceptions": {
+    "refresh_too_soon": {
+      "message": "Data was refreshed less than a minute ago. Try again in {seconds} s."
+    },
+    "refresh_in_progress": {
+      "message": "A refresh is already running."
+    }
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "DOMO",
+        "description": "Введите номер телефона, зарегистрированный в приложении DOMO. На него придёт SMS-код.",
+        "data": {
+          "phone": "Номер телефона",
+          "language": "Язык"
+        }
+      },
+      "otp": {
+        "title": "SMS-код",
+        "description": "Введите код, отправленный на {phone}.",
+        "data": {
+          "code": "Код"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Повторный вход в DOMO",
+        "description": "Сессия DOMO истекла. Нажмите «Отправить», чтобы получить новый SMS-код на {phone}."
+      }
+    },
+    "error": {
+      "invalid_phone": "Введите узбекский номер, например +998 90 123 45 67.",
+      "too_many_requests": "Слишком много запросов SMS. Повторите через {retry_after} с.",
+      "otp_request_failed": "DOMO не отправил SMS ({error}).",
+      "invalid_code": "Код неверный или устарел.",
+      "cannot_connect": "Нет связи с DOMO."
+    },
+    "abort": {
+      "already_configured": "Этот аккаунт DOMO уже добавлен.",
+      "reauth_successful": "Вход выполнен.",
+      "wrong_account": "Этот номер относится к другому аккаунту DOMO."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "balance": {
+        "name": "Баланс"
+      },
+      "meter_reading": {
+        "name": "Показание счётчика"
+      },
+      "reading_date": {
+        "name": "Дата показания"
+      },
+      "month_usage": {
+        "name": "Расход за месяц"
+      },
+      "month_charge": {
+        "name": "Начислено за месяц"
+      },
+      "last_day_usage": {
+        "name": "Расход за последний день"
+      },
+      "last_day_charge": {
+        "name": "Начислено за последний день"
+      },
+      "updated_at": {
+        "name": "Обновлено"
+      }
+    },
+    "button": {
+      "refresh": {
+        "name": "Обновить данные"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Настройки DOMO",
+        "description": "Как часто получать данные из DOMO (сам DOMO обновляет расход примерно раз в сутки) и на каком языке получать ответы DOMO и называть устройства.",
+        "data": {
+          "scan_interval": "Интервал опроса (часы)",
+          "language": "Язык"
+        }
+      }
+    }
+  },
+  "selector": {
+    "language": {
+      "options": {
+        "ru": "Русский",
+        "uz": "Oʻzbekcha",
+        "en": "English"
+      }
+    }
+  },
+  "exceptions": {
+    "refresh_too_soon": {
+      "message": "Данные обновлялись меньше минуты назад. Повторите через {seconds} с."
+    },
+    "refresh_in_progress": {
+      "message": "Обновление уже выполняется."
+    }
+  }
+}

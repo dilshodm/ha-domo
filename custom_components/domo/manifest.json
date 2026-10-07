@@ -1,0 +1,12 @@
+{
+  "domain": "domo",
+  "name": "DOMO",
+  "codeowners": ["@dilshodm"],
+  "config_flow": true,
+  "documentation": "https://github.com/dilshodm/ha-domo",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/dilshodm/ha-domo/issues",
+  "requirements": [],
+  "version": "0.3.0"
+}

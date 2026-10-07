@@ -1,0 +1,99 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "DOMO",
+        "description": "DOMO ilovasida roʻyxatdan oʻtgan telefon raqamini kiriting. Unga SMS-kod yuboriladi.",
+        "data": {
+          "phone": "Telefon raqami",
+          "language": "Til"
+        }
+      },
+      "otp": {
+        "title": "SMS-kod",
+        "description": "{phone} raqamiga yuborilgan kodni kiriting.",
+        "data": {
+          "code": "Kod"
+        }
+      },
+      "reauth_confirm": {
+        "title": "DOMO’ga qayta kirish",
+        "description": "DOMO sessiyasi tugadi. {phone} raqamiga yangi SMS-kod yuborish uchun «Yuborish» tugmasini bosing."
+      }
+    },
+    "error": {
+      "invalid_phone": "Oʻzbekiston raqamini kiriting, masalan +998 90 123 45 67.",
+      "too_many_requests": "SMS soʻrovlari juda koʻp. {retry_after} soniyadan keyin qayta urinib koʻring.",
+      "otp_request_failed": "DOMO SMS yubormadi ({error}).",
+      "invalid_code": "Kod notoʻgʻri yoki muddati oʻtgan.",
+      "cannot_connect": "DOMO bilan aloqa yoʻq."
+    },
+    "abort": {
+      "already_configured": "Bu DOMO hisobi allaqachon qoʻshilgan.",
+      "reauth_successful": "Qayta kirish bajarildi.",
+      "wrong_account": "Bu raqam boshqa DOMO hisobiga tegishli."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "DOMO sozlamalari",
+        "description": "DOMO’dan maʼlumotlarni qanchalik tez-tez olish (DOMO isteʼmolni taxminan kuniga bir marta yangilaydi) hamda DOMO javoblari va qurilma nomlari tili.",
+        "data": {
+          "scan_interval": "Soʻrov oraligʻi (soat)",
+          "language": "Til"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "balance": {
+        "name": "Balans"
+      },
+      "meter_reading": {
+        "name": "Hisoblagich koʻrsatkichi"
+      },
+      "reading_date": {
+        "name": "Koʻrsatkich sanasi"
+      },
+      "month_usage": {
+        "name": "Oylik isteʼmol"
+      },
+      "month_charge": {
+        "name": "Oy uchun hisoblangan"
+      },
+      "last_day_usage": {
+        "name": "Oxirgi kun isteʼmoli"
+      },
+      "last_day_charge": {
+        "name": "Oxirgi kun uchun hisoblangan"
+      },
+      "updated_at": {
+        "name": "Yangilangan"
+      }
+    },
+    "button": {
+      "refresh": {
+        "name": "Maʼlumotlarni yangilash"
+      }
+    }
+  },
+  "selector": {
+    "language": {
+      "options": {
+        "ru": "Русский",
+        "uz": "Oʻzbekcha",
+        "en": "English"
+      }
+    }
+  },
+  "exceptions": {
+    "refresh_too_soon": {
+      "message": "Maʼlumotlar bir daqiqadan kamroq vaqt oldin yangilangan. {seconds} soniyadan keyin qayta urinib koʻring."
+    },
+    "refresh_in_progress": {
+      "message": "Yangilash allaqachon bajarilmoqda."
+    }
+  }
+}
