@@ -2,5 +2,7 @@
   "name": "DOMO",
   "render_readme": true,
   "homeassistant": "2026.3.0",
-  "country": ["UZ"]
+  "country": ["UZ"],
+  "zip_release": true,
+  "filename": "domo.zip"
 }
