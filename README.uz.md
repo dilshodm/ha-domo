@@ -47,7 +47,7 @@ Har bir hisob raqami xizmat nomi va hisob raqami bilan nomlangan qurilmaga aylan
 | Oxirgi kun isteʼmoli / hisoblangan | gaz, elektr | DOMO kunlik statistikasidagi oxirgi kun; `date` atributi |
 | Yangilangan | hammasi | diagnostika: DOMO hisobni oxirgi marta qachon sinxronlagani |
 
-Kirishning oʻzi ham qurilma sifatida koʻrinadi (**DOMO +998…**), unda **Maʼlumotlarni yangilash** tugmasi bor. U DOMO’dan barcha hisoblarni yetkazib beruvchilar bilan qayta sinxronlashni soʻraydi (ilovadagi pastga tortib yangilash kabi) va keyingi soʻrovni kutmasdan natijani darhol oladi. Muvaffaqiyatli yangilashdan keyin tugmani bir daqiqadan soʻng yana bosish mumkin.
+Kirishning oʻzi ham qurilma sifatida koʻrinadi (**DOMO +998…**), unda **Maʼlumotlarni yangilash** tugmasi bor. U soʻrovni darhol ishga tushiradi: DOMO’dan barcha hisoblarni yetkazib beruvchilar bilan qayta sinxronlashni soʻraydi (ilovadagi pastga tortib yangilash kabi) va natijani oladi. Muvaffaqiyatli yangilashdan keyin tugmani bir daqiqadan soʻng yana bosish mumkin.
 
 ### Yangi hisoblar
 
@@ -57,7 +57,7 @@ DOMO ilovasida xizmat yoki uy qoʻshsangiz, yangi qurilma va sensorlar keyingi s
 
 **Sozlamalar → Qurilmalar va xizmatlar → DOMO → Sozlash**:
 
-- **Soʻrov oraligʻi**: 1 dan 24 soatgacha, standart qiymat 3. DOMO isteʼmolni taxminan kuniga bir marta yangilaydi.
+- **Soʻrov oraligʻi**: 1 dan 24 soatgacha, standart qiymat 3. Har bir soʻrov avval DOMO’dan barcha hisoblarni yetkazib beruvchilar bilan sinxronlashni soʻraydi: DOMO buni oʻzi qilmaydi va busiz eski maʼlumotlarni qaytaradi.
 - **Til**: Русский, Oʻzbekcha yoki English. DOMO javoblari tili va qurilma nomlarini belgilaydi («Газ / Gaz / Gas 1007090145»). U dastlabki sozlashda ham soʻraladi, standart qiymat Home Assistant tili. Sensor nomlari odatdagidek Home Assistant tiliga mos boʻladi.
 
 ## Maxfiylik

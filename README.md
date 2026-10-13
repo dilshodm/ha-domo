@@ -47,7 +47,7 @@ Each utility account becomes a device named after the service and the account nu
 | Last day usage / charge | gas, electricity | most recent day from DOMO's daily stats; `date` attribute |
 | Updated | all | diagnostic: when DOMO last synced the account |
 
-The login itself is a device too (**DOMO +998…**) with a **Refresh data** button. Pressing it asks DOMO to re-sync every account with its provider (like pull-to-refresh in the app) and then fetches the result, without waiting for the next poll. After a successful refresh, the button can be pressed again after one minute.
+The login itself is a device too (**DOMO +998…**) with a **Refresh data** button. Pressing it runs a poll right away: it asks DOMO to re-sync every account with its provider (like pull-to-refresh in the app) and then fetches the result. After a successful refresh, the button can be pressed again after one minute.
 
 ### New accounts
 
@@ -57,7 +57,7 @@ When you add a service or a home in the DOMO app, its devices and sensors appear
 
 **Settings → Devices & services → DOMO → Configure**:
 
-- **Polling interval**: 1–24 hours, default 3. DOMO itself updates usage about once a day.
+- **Polling interval**: 1–24 hours, default 3. Each poll asks DOMO to re-sync every account with its provider first: DOMO doesn't re-sync on its own, so without that it keeps returning old data.
 - **Language**: Русский, Oʻzbekcha or English. It sets the language DOMO answers in and the device names ("Газ / Gaz / Gas 1007090145"). It is also asked during setup, where it defaults to Home Assistant's language. Sensor names follow Home Assistant's own language, as usual.
 
 ## Privacy

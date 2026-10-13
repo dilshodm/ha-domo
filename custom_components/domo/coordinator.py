@@ -73,6 +73,8 @@ class DomoCoordinator(DataUpdateCoordinator[DomoData]):
 
     async def _async_update_data(self) -> DomoData:
         try:
+            # HomeList only returns DOMO's cached copy, so have it re-sync first.
+            await self._resync_accounts()
             homes = await self.client.homes()
             data: DomoData = {}
             for home, service, account in iter_accounts(homes):
@@ -100,24 +102,29 @@ class DomoCoordinator(DataUpdateCoordinator[DomoData]):
         return max(0, math.ceil(self._last_pull + PULL_COOLDOWN - time.monotonic()))
 
     async def async_pull(self) -> None:
-        """Make DOMO re-sync every account with its provider, then fetch the result."""
+        """Re-sync and fetch now, without waiting for the next poll."""
         self.pulling = True
         try:
-            for acc in list((self.data or {}).values()):
-                try:
-                    await self.client.refresh_account(acc.service, acc.account["id"])
-                except DomoAuthError:
-                    break  # the refresh below raises the reauth
-                except DomoError as err:
-                    # Some services can't be re-synced; the regular fetch still covers them.
-                    _LOGGER.debug(
-                        "DOMO refresh of %s %s failed: %s", acc.service, acc.account["id"], err
-                    )
             await self.async_refresh()
             if self.last_update_success:
                 self._last_pull = time.monotonic()
         finally:
             self.pulling = False
+
+    async def _resync_accounts(self) -> None:
+        """Make DOMO re-sync every known account with its provider (the app's
+        pull-to-refresh); DOMO doesn't do it by itself. The first fetch after
+        setup has no accounts yet and reads the cache."""
+        for acc in list((self.data or {}).values()):
+            try:
+                await self.client.refresh_account(acc.service, acc.account["id"])
+            except DomoAuthError:
+                raise
+            except DomoError as err:
+                # Some services can't be re-synced; the fetch still covers them.
+                _LOGGER.debug(
+                    "DOMO refresh of %s %s failed: %s", acc.service, acc.account["id"], err
+                )
 
     async def _last_day(self, acc: DomoAccount, year: int, month: int) -> dict[str, Any] | None:
         usage = await self.client.daily_usage(acc.service, acc.account["id"], year, month)
