@@ -13,6 +13,9 @@ DEFAULT_SCAN_INTERVAL = 3
 MIN_SCAN_INTERVAL = 1
 MAX_SCAN_INTERVAL = 24
 
+# After a failed poll, try again this soon instead of waiting a full interval, in seconds.
+RETRY_AFTER = 10 * 60
+
 # Language for DOMO replies and device names.
 CONF_LANGUAGE = "language"
 LANGUAGES = ["ru", "uz", "en"]
