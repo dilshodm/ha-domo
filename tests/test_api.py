@@ -8,6 +8,7 @@ from pathlib import Path
 import sys
 import time
 
+import aiohttp
 import pytest
 
 # Load api.py directly so the tests don't need Home Assistant installed.
@@ -35,6 +36,8 @@ class FakeResponse:
         return self._body
 
     async def __aenter__(self):
+        if isinstance(self.status, Exception):
+            raise self.status
         return self
 
     async def __aexit__(self, *exc):
@@ -54,6 +57,11 @@ class FakeSession:
         expected, status, body = self.replies.pop(0)
         assert path == expected, f"expected {expected}, got {path}"
         return FakeResponse(status, body)
+
+
+@pytest.fixture(autouse=True)
+def no_retry_wait(monkeypatch):
+    monkeypatch.setattr(api, "RETRY_DELAYS", (0, 0))
 
 
 def client(session, access=None, refresh="r0", tokens=None):
@@ -165,9 +173,33 @@ async def test_rejected_refresh_raises_auth_error():
         await client(session, access=None).homes()
 
 
-async def test_server_error_is_connection_error():
-    session = FakeSession([("home/HomeList", 502, None)])
-    with pytest.raises(api.DomoConnectionError):
+async def test_server_error_is_connection_error_after_retries():
+    session = FakeSession([("home/HomeList", 502, None)] * 3)
+    with pytest.raises(api.DomoConnectionError, match="502"):
+        await client(session, access=jwt(time.time() + 5 * 86400)).homes()
+    assert len(session.calls) == 3
+
+
+async def test_transient_503_is_retried():
+    session = FakeSession(
+        [("home/HomeList", 503, None), ("home/HomeList", 200, [{"id": "h1"}])]
+    )
+    assert await client(session, access=jwt(time.time() + 5 * 86400)).homes() == [{"id": "h1"}]
+
+
+async def test_network_error_is_retried():
+    session = FakeSession(
+        [
+            ("home/HomeList", aiohttp.ClientConnectionError("reset"), None),
+            ("home/HomeList", 200, []),
+        ]
+    )
+    assert await client(session, access=jwt(time.time() + 5 * 86400)).homes() == []
+
+
+async def test_4xx_is_not_retried():
+    session = FakeSession([("home/HomeList", 404, {"detail": "not_found"})])
+    with pytest.raises(api.DomoRequestError, match="not_found"):
         await client(session, access=jwt(time.time() + 5 * 86400)).homes()
 
 
@@ -228,6 +260,13 @@ async def test_refresh_account_posts_the_account_id():
     c = client(session, access=jwt(time.time() + 5 * 86400))
     assert (await c.refresh_account("natural_gas", "g1"))["balance"] == "1.00"
     assert session.calls[0][:3] == ("POST", "natural_gas/AccountRefresh", {"id": "g1"})
+
+
+async def test_refresh_account_is_not_retried():
+    session = FakeSession([("natural_gas/AccountRefresh", 503, None)])
+    with pytest.raises(api.DomoConnectionError):
+        await client(session, access=jwt(time.time() + 5 * 86400)).refresh_account("natural_gas", "g1")
+    assert len(session.calls) == 1
 
 
 def test_home_label_flat_word_follows_language():

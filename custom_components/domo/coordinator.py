@@ -28,6 +28,7 @@ from .const import (
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     PULL_COOLDOWN,
+    RETRY_AFTER,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -86,14 +87,32 @@ class DomoCoordinator(DataUpdateCoordinator[DomoData]):
                     analytics=home[service].get("analytics"),
                 )
             today = dt_util.now()
+            previous = self.data or {}
             for acc in data.values():
-                if acc.service in DAILY_USAGE_SERVICES:
+                if acc.service not in DAILY_USAGE_SERVICES:
+                    continue
+                try:
                     acc.last_day = await self._last_day(acc, today.year, today.month)
+                except DomoAuthError:
+                    raise
+                except DomoError as err:
+                    # Don't drop every balance over one account's daily usage:
+                    # keep its last known day until the next poll.
+                    _LOGGER.warning(
+                        "DOMO daily usage of %s %s failed: %s",
+                        acc.service,
+                        acc.account["id"],
+                        err,
+                    )
+                    if old := previous.get(acc.account["id"]):
+                        acc.last_day = old.last_day
             return data
         except DomoAuthError as err:
             raise ConfigEntryAuthFailed(f"DOMO session expired: {err}") from err
         except DomoError as err:
-            raise UpdateFailed(f"Error communicating with DOMO: {err}") from err
+            raise UpdateFailed(
+                f"Error communicating with DOMO: {err}", retry_after=RETRY_AFTER
+            ) from err
 
     def pull_cooldown_left(self) -> int:
         """Seconds until the next manual refresh is allowed."""

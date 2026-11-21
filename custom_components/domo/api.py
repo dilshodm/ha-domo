@@ -27,6 +27,9 @@ TIMEOUT = aiohttp.ClientTimeout(total=30)
 # Refresh the 7-day access token once it has less than a day left.
 ACCESS_REFRESH_MARGIN = 24 * 3600
 
+# Seconds to wait before each retry of a data call that got a 5xx or no answer.
+RETRY_DELAYS = (5, 20)
+
 
 class DomoError(Exception):
     """Base error."""
@@ -154,14 +157,32 @@ class DomoClient:
             raise DomoRequestError(status, _detail(body), retry_after)
         raise DomoConnectionError(f"HTTP {status}")
 
-    async def _request(self, method: str, path: str, payload: dict | None = None) -> Any:
+    async def _send_retrying(
+        self, method: str, path: str, payload: dict | None, retry: bool
+    ) -> tuple[int, Any]:
+        """Authenticated `_send`, retried while the gateway answers 5xx or not at all."""
+        for delay in (*RETRY_DELAYS, None) if retry else (None,):
+            try:
+                status, body = await self._send(method, path, payload, auth=True)
+            except DomoConnectionError:
+                if delay is None:
+                    raise
+            else:
+                if status < 500 or delay is None:
+                    return status, body
+            await asyncio.sleep(delay)
+        raise AssertionError("unreachable")
+
+    async def _request(
+        self, method: str, path: str, payload: dict | None = None, retry: bool = True
+    ) -> Any:
         """Authenticated call; refreshes the access token when needed."""
         if self._access_expiring():
             await self.refresh_tokens()
-        status, body = await self._send(method, path, payload, auth=True)
+        status, body = await self._send_retrying(method, path, payload, retry)
         if status == 401:
             await self.refresh_tokens()
-            status, body = await self._send(method, path, payload, auth=True)
+            status, body = await self._send_retrying(method, path, payload, retry)
             if status == 401:
                 raise DomoAuthError(_detail(body))
         if status != 200:
@@ -248,8 +269,13 @@ class DomoClient:
         return await self._request("GET", "home/HomeList")
 
     async def refresh_account(self, service: str, account_id: str) -> dict[str, Any]:
-        """Ask DOMO to re-sync one account with its provider (the app's pull-to-refresh)."""
-        return await self._request("POST", f"{service}/AccountRefresh", {"id": account_id})
+        """Ask DOMO to re-sync one account with its provider (the app's pull-to-refresh).
+
+        Not retried: a failed re-sync only means the fetch reads DOMO's cache.
+        """
+        return await self._request(
+            "POST", f"{service}/AccountRefresh", {"id": account_id}, retry=False
+        )
 
     async def daily_usage(
         self, service: str, account_id: str, year: int, month: int
