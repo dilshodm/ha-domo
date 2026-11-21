@@ -25,6 +25,8 @@ Ilovadagi faol seanslar roʻyxatida Home Assistant **Home Assistant** nomi bilan
 1. HACS → ⋮ → **Custom repositories** → `https://github.com/dilshodm/ha-domo` manzilini qoʻshing, toifa **Integration**.
 2. **DOMO**ni oʻrnating va Home Assistant’ni qayta ishga tushiring.
 
+**Yangilanishlar.** HACS custom repositoriylarda yangi versiyani faqat 48 soatda bir marta tekshiradi va bu hisob Home Assistant har safar qayta ishga tushganda boshidan boshlanadi. Yangi versiyani darhol koʻrish uchun: HACS → **DOMO** → ⋮ → **Update information**. Shundan soʻng yangilanish **Settings → Updates** boʻlimida chiqadi.
+
 ### Qoʻlda
 
 `custom_components/domo` papkasini `config/custom_components` ichiga nusxalang va Home Assistant’ni qayta ishga tushiring.
