@@ -25,6 +25,8 @@ Home Assistant appears as **Home Assistant** in the app's list of active session
 1. HACS → ⋮ → **Custom repositories** → add `https://github.com/dilshodm/ha-domo`, category **Integration**.
 2. Install **DOMO** and restart Home Assistant.
 
+**Updates.** HACS checks custom repositories for new releases only every 48 hours, and that timer starts over on every Home Assistant restart. To see a new version right away: HACS → **DOMO** → ⋮ → **Update information**. The update then appears under **Settings → Updates**.
+
 ### Manual
 
 Copy `custom_components/domo` into your `config/custom_components` folder and restart Home Assistant.
